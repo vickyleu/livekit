@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/mitchellh/go-homedir"
-	"github.com/pion/webrtc/v3"
 	"github.com/pkg/errors"
 	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v3"
@@ -229,15 +228,9 @@ func NewConfig(confString string, c *cli.Context) (*Config, error) {
 		},
 		Redis: RedisConfig{},
 		Room: RoomConfig{
-			AutoCreate: true,
-			EnabledCodecs: []CodecSpec{
-				{Mime: webrtc.MimeTypeOpus},
-				{Mime: webrtc.MimeTypeVP8},
-				{Mime: webrtc.MimeTypeH264},
-				// {Mime: webrtc.MimeTypeAV1},
-				// {Mime: webrtc.MimeTypeVP9},
-			},
-			EmptyTimeout: 5 * 60,
+			AutoCreate:    true,
+			EnabledCodecs: CodecDef(),
+			EmptyTimeout:  5 * 60,
 		},
 		Logging: LoggingConfig{
 			PionLevel: "error",

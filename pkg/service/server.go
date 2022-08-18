@@ -27,7 +27,7 @@ import (
 )
 
 type LivekitServer struct {
-	config        *config.Config
+	Config        *config.Config
 	egressService *EgressService
 	rtcService    *RTCService
 	httpServer    *http.Server
@@ -52,7 +52,7 @@ func NewLivekitServer(conf *config.Config,
 	currentNode routing.LocalNode,
 ) (s *LivekitServer, err error) {
 	s = &LivekitServer{
-		config:        conf,
+		Config:        conf,
 		egressService: egressService,
 		rtcService:    rtcService,
 		router:        router,
@@ -120,7 +120,7 @@ func (s *LivekitServer) Node() *livekit.Node {
 }
 
 func (s *LivekitServer) HTTPPort() int {
-	return int(s.config.Port)
+	return int(s.Config.Port)
 }
 
 func (s *LivekitServer) IsRunning() bool {
@@ -132,7 +132,6 @@ func (s *LivekitServer) Start() error {
 		return errors.New("already running")
 	}
 	s.doneChan = make(chan struct{})
-
 	if err := s.router.RegisterNode(); err != nil {
 		return err
 	}
@@ -141,7 +140,6 @@ func (s *LivekitServer) Start() error {
 			logger.Errorw("could not unregister node", err)
 		}
 	}()
-
 	if err := s.router.Start(); err != nil {
 		return err
 	}
@@ -149,8 +147,7 @@ func (s *LivekitServer) Start() error {
 	if err := s.egressService.Start(); err != nil {
 		return err
 	}
-
-	addresses := s.config.BindAddresses
+	addresses := s.Config.BindAddresses
 	if addresses == nil {
 		addresses = []string{""}
 	}
@@ -159,45 +156,44 @@ func (s *LivekitServer) Start() error {
 	listeners := make([]net.Listener, 0)
 	promListeners := make([]net.Listener, 0)
 	for _, addr := range addresses {
-		ln, err := net.Listen("tcp", fmt.Sprintf("%s:%d", addr, s.config.Port))
+		ln, err := net.Listen("tcp", fmt.Sprintf("%s:%d", addr, s.Config.Port))
 		if err != nil {
 			return err
 		}
 		listeners = append(listeners, ln)
 
 		if s.promServer != nil {
-			ln, err = net.Listen("tcp", fmt.Sprintf("%s:%d", addr, s.config.PrometheusPort))
+			ln, err = net.Listen("tcp", fmt.Sprintf("%s:%d", addr, s.Config.PrometheusPort))
 			if err != nil {
 				return err
 			}
 			promListeners = append(promListeners, ln)
 		}
 	}
-
 	values := []interface{}{
-		"portHttp", s.config.Port,
+		"portHttp", s.Config.Port,
 		"nodeID", s.currentNode.Id,
 		"nodeIP", s.currentNode.Ip,
 		"version", version.Version,
 	}
-	if s.config.BindAddresses != nil {
-		values = append(values, "bindAddresses", s.config.BindAddresses)
+	if s.Config.BindAddresses != nil {
+		values = append(values, "bindAddresses", s.Config.BindAddresses)
 	}
-	if s.config.RTC.TCPPort != 0 {
-		values = append(values, "rtc.portTCP", s.config.RTC.TCPPort)
+	if s.Config.RTC.TCPPort != 0 {
+		values = append(values, "rtc.portTCP", s.Config.RTC.TCPPort)
 	}
-	if !s.config.RTC.ForceTCP && s.config.RTC.UDPPort != 0 {
-		values = append(values, "rtc.portUDP", s.config.RTC.UDPPort)
+	if !s.Config.RTC.ForceTCP && s.Config.RTC.UDPPort != 0 {
+		values = append(values, "rtc.portUDP", s.Config.RTC.UDPPort)
 	} else {
 		values = append(values,
-			"rtc.portICERange", []uint32{s.config.RTC.ICEPortRangeStart, s.config.RTC.ICEPortRangeEnd},
+			"rtc.portICERange", []uint32{s.Config.RTC.ICEPortRangeStart, s.Config.RTC.ICEPortRangeEnd},
 		)
 	}
-	if s.config.PrometheusPort != 0 {
-		values = append(values, "portPrometheus", s.config.PrometheusPort)
+	if s.Config.PrometheusPort != 0 {
+		values = append(values, "portPrometheus", s.Config.PrometheusPort)
 	}
-	if s.config.Region != "" {
-		values = append(values, "region", s.config.Region)
+	if s.Config.Region != "" {
+		values = append(values, "region", s.Config.Region)
 	}
 	logger.Infow("starting LiveKit server", values...)
 

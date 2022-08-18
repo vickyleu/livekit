@@ -11,6 +11,27 @@ LiveKit's server is written in Go, using the awesome [Pion WebRTC](https://githu
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/livekit/livekit)](https://github.com/livekit/livekit/releases/latest)
 [![License](https://img.shields.io/github/license/livekit/livekit)](https://github.com/livekit/livekit/blob/master/LICENSE)
 
+## 剩余未完成功能 
+框架实际上包含所有功能,但需要写一个C语言的导出函数,app通过头文件访问go打包二进制的函数
+ - <strong>createToken</strong>: 创建token,不记得有没有写完 😓 (房间管理可以参考这种写法)
+ - <strong>创建房间,管理房间</strong>: 还没做
+ - ~~<strong>startByArgument</strong>: 通过传递json字符串启动一个rtc服务~~(已实现) 
+  <br>
+  <br>
+  <br>
+  但是 <u><font color=red>如果能在启动服务时
+   返回一个var server *service.LivekitServer 的  <strong>void\*</strong>  指针更好,避免反复传apiKey和apiSecret,还有
+   目前的服务调起后绑定的端口杀死不会解绑,不知道怎么回事,要修改成服务关闭前主动解绑端口号</font></u>
+
+## 打包二进制
+```
+  goreleaser release --skip-publish --snapshot --rm-dist'
+```
+ - <font color=blue>目前注释掉了其他平台的打包,可以通过修改.goreleaser.yaml builds 里面对应的
+   平台进行独立打包,除Webassembly以外,已全部实现各平台的交叉编译,windows编译在
+   linux和mac上需要安装zig cc打包arm架构,mingw32打包x86架构,在windows上可以安装visual studio,
+   其他的我也没试过.iOS必须使用mac打包,macOS的也可以实现交叉编译</font>
+
 ## Features
 
 - Scalable, distributed WebRTC SFU (Selective Forwarding Unit)

@@ -78,10 +78,43 @@ func BuildLinux() error {
 	if err := os.MkdirAll("bin", 0755); err != nil {
 		return err
 	}
-	cmd := exec.Command("go", "build", "-buildvcs=false", "-o", "../../bin/livekit-server-amd64")
+	cmd := exec.Command("go", "build", "-buildvcs=false", "-o", "../../bin/libLivekit-amd64")
 	cmd.Env = []string{
 		"GOOS=linux",
 		"GOARCH=amd64",
+		"HOME=" + os.Getenv("HOME"),
+		"GOPATH=" + os.Getenv("GOPATH"),
+	}
+	cmd.Dir = "cmd/server"
+	connectStd(cmd)
+	if err := cmd.Run(); err != nil {
+		return err
+	}
+
+	checksummer.WriteChecksum()
+	return nil
+}
+
+// builds binary that runs on android arm64
+func BuildAndroid() error {
+	mg.Deps(generateWire)
+	if !checksummer.IsChanged() {
+		fmt.Println("up to date")
+		return nil
+	}
+
+	fmt.Println("building...")
+	if err := os.MkdirAll("bin", 0755); err != nil {
+		return err
+	}
+	cmd := exec.Command("go", "build", "-buildmode=c-shared", "-buildvcs=false", "-o", "../../bin/libLivekit64.so") //"-ldflags=-s,-w",
+	cmd.Env = []string{
+		"CGO_ENABLED=1",
+		"NDK=/Users/vickyleu/Develop/Android/SDK/ndk/25.0.8775105/",
+		"CC=/Users/vickyleu/Develop/Android/SDK/ndk/25.0.8775105/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android33-clang",
+		"CXX=/Users/vickyleu/Develop/Android/SDK/ndk/25.0.8775105/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android33-clang++",
+		"GOOS=android",
+		"GOARCH=arm64",
 		"HOME=" + os.Getenv("HOME"),
 		"GOPATH=" + os.Getenv("GOPATH"),
 	}

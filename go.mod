@@ -1,11 +1,10 @@
 module github.com/livekit/livekit-server
 
-go 1.17
+go 1.19
 
 require (
 	github.com/bep/debounce v1.2.0
 	github.com/d5/tengo/v2 v2.10.1
-	github.com/dustin/go-humanize v1.0.0
 	github.com/elliotchance/orderedmap v1.4.0
 	github.com/florianl/go-tc v0.4.1
 	github.com/gammazero/deque v0.1.0
@@ -22,7 +21,6 @@ require (
 	github.com/magefile/mage v1.13.0
 	github.com/maxbrunsfeld/counterfeiter/v6 v6.5.0
 	github.com/mitchellh/go-homedir v1.1.0
-	github.com/olekukonko/tablewriter v0.0.5
 	github.com/pion/ice/v2 v2.2.7
 	github.com/pion/interceptor v0.1.11
 	github.com/pion/logging v0.2.2
@@ -32,7 +30,7 @@ require (
 	github.com/pion/stun v0.3.5
 	github.com/pion/transport v0.13.1
 	github.com/pion/turn/v2 v2.0.8
-	github.com/pion/webrtc/v3 v3.1.42
+	github.com/pion/webrtc/v3 v3.1.43
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.12.2
 	github.com/rs/cors v1.8.2
@@ -66,7 +64,6 @@ require (
 	github.com/josharian/native v1.0.0 // indirect
 	github.com/jxskiss/base62 v1.1.0 // indirect
 	github.com/lithammer/shortuuid/v3 v3.0.7 // indirect
-	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/mdlayher/netlink v1.6.0 // indirect
 	github.com/mdlayher/socket v0.1.1 // indirect
@@ -75,7 +72,7 @@ require (
 	github.com/pion/mdns v0.0.5 // indirect
 	github.com/pion/randutil v0.1.0 // indirect
 	github.com/pion/sctp v1.8.2 // indirect
-	github.com/pion/srtp/v2 v2.0.9 // indirect
+	github.com/pion/srtp/v2 v2.0.10 // indirect
 	github.com/pion/udp v0.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
