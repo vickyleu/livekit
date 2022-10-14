@@ -9,7 +9,7 @@ builds:
 #      - CGO_ENABLED=1
 #      - CC=/usr/local/go/misc/ios/clangwrap.sh
 #    main: ./cmd/server
-#    binary: livekit-server.a
+#    binary: livekit-server.dylib
 #    goos:
 #      - ios
 #    goarm:
@@ -21,23 +21,28 @@ builds:
 #    ldflags: -s -w -v
 #    mod_timestamp: "{{ .CommitTimestamp }}"
 #    flags: -buildmode=c-archive -x -v -trimpath
-  - id: livekit-linux-x86
-    env:
-      - CGO_ENABLED=1
-      - CC=x86_64-unknown-linux-gnu-gcc
-      - CXX=x86_64-unknown-linux-gnu-g++
-    main: ./cmd/server
-    binary: livekit-server.so
-    goarm:
-      - "6"
-      - "7"
-    goarch:
-      - amd64
-    goos:
-      - linux
-    ldflags: -s -w
-    mod_timestamp: "{{ .CommitTimestamp }}"
-    flags: -buildmode=c-shared -x -v -trimpath
+#
+#
+##xcrun -sdk iphoneos clang -arch armv7 -fpic -shared -Wl,-all_load libmystatic.a -framework Corefoundation -o libmydynamic.dylib
+#  - id: livekit-linux-x86
+#    env:
+#      - CGO_ENABLED=1
+#      - CC=x86_64-unknown-linux-gnu-gcc
+#      - CXX=x86_64-unknown-linux-gnu-g++
+#    main: ./cmd/server
+#    binary: livekit-server.so
+#    goarm:
+#      - "6"
+#      - "7"
+#    goarch:
+#      - amd64
+#    goos:
+#      - linux
+#    ldflags: -s -w
+#    mod_timestamp: "{{ .CommitTimestamp }}"
+#    flags: -buildmode=c-shared -x -v -trimpath
+#
+#
 #  - id: livekit-linux-arm64
 #    env:
 #      - CGO_ENABLED=1
@@ -55,6 +60,8 @@ builds:
 #    ldflags: -s -w
 #    mod_timestamp: "{{ .CommitTimestamp }}"
 #    flags: -buildmode=c-shared -x -v -trimpath
+#
+#
 #  - id: livekit-android-x86
 #    env:
 #      - CGO_ENABLED=1
@@ -73,6 +80,8 @@ builds:
 #    ldflags: -s -w
 #    mod_timestamp: "{{ .CommitTimestamp }}"
 #    flags: -buildmode=c-shared -x -v -trimpath
+#
+#
 #  - id: livekit-android-arm64
 #    env:
 #      - CGO_ENABLED=1
@@ -91,6 +100,8 @@ builds:
 #    ldflags: -s -w
 #    mod_timestamp: "{{ .CommitTimestamp }}"
 #    flags: -buildmode=c-shared -x -v -trimpath
+#
+#
 #  - id: livekit-android-arm
 #    env:
 #      - CGO_ENABLED=1
@@ -109,25 +120,29 @@ builds:
 #    ldflags: -s -w
 #    mod_timestamp: "{{ .CommitTimestamp }}"
 #    flags: -buildmode=c-shared -x -v -trimpath
-#  - id: livekit-darwin
-#    env:
-#      - CGO_ENABLED=1
-#      - CC=clang
-#      - CGO_CFLAGS="-fembed-bitcode"
-#      - GOIOS_DEV_ID='"Apple Development&#58; 移志 Leu (W3LYR8MNAQ)"'
-#      - GOIOS_APP_ID=QG2XXU4LA3.com.uoocuniversity.school
-#      - GOIOS_TEAM_ID=QG2XXU4LA3
-#      - GOIOS_DEVICE_ID=00008110-00122DA63622801E
-#    main: ./cmd/server
-#    binary: livekit-server.dylib
-#    goos:
-#      - darwin
-#    goarch:
-#        - amd64
-#        - arm64
-#    ldflags: -s -w
-#    mod_timestamp: "{{ .CommitTimestamp }}"
-#    flags: -buildmode=c-shared -x -v -trimpath
+
+
+  - id: livekit-darwin
+    env:
+      - CGO_ENABLED=1
+      - CC=clang
+      - CGO_CFLAGS="-fembed-bitcode"
+      - GOIOS_DEV_ID='"Apple Development&#58; 移志 Leu (W3LYR8MNAQ)"'
+      - GOIOS_APP_ID=QG2XXU4LA3.com.uoocuniversity.school
+      - GOIOS_TEAM_ID=QG2XXU4LA3
+      - GOIOS_DEVICE_ID=00008110-00122DA63622801E
+    main: ./cmd/server
+    binary: livekit-server.dylib
+    goos:
+      - darwin
+    goarch:
+        - amd64
+        - arm64
+    ldflags: -s -w
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    flags: -buildmode=c-shared -x -v -trimpath
+
+#
 #  - id: livekit-x86
 #    env:
 #      - CGO_ENABLED=1
@@ -145,6 +160,8 @@ builds:
 #    mod_timestamp: "{{ .CommitTimestamp }}"
 #    ldflags: -s -w
 #    flags: -buildmode=c-shared -x -v -trimpath
+#
+#
 #  - id: livekit-arm64
 #    env:
 #      - CGO_ENABLED=1
@@ -184,25 +201,22 @@ builds:
 #  - id: livekit-ios-amd
 #    env:
 #      - CGO_ENABLED=1
-#      - CC=/usr/local/go/misc/ios/clangwrap.sh
-#      - CGO_CFLAGS="-fembed-bitcode "
+#      - CC="/usr/local/go/misc/ios/clangwrap.sh -arch=arm64  -isysroot=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.0.sdk"
+#      - CGO_CFLAGS="-arch=x86_64   -isysroot=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.0.sdk"
 #      - GOIOS_DEV_ID='"Apple Development&#58; 移志 Leu (W3LYR8MNAQ)"'
 #      - GOIOS_APP_ID=QG2XXU4LA3.com.uoocuniversity.school
 #      - GOIOS_TEAM_ID=QG2XXU4LA3
 #      - GOIOS_DEVICE_ID=00008110-00122DA63622801E
 #    main: ./cmd/server
-#    binary: livekit-server.dylib
+#    binary: livekit-server #//.dylib
 #    goos:
-#      - ios
-#    goarm:
-#      - "6"
-#      - "7"
+#      - darwin
 #    goarch:
-#      - arm64
-#    ldflags: -s -w -v
+#      - amd64
+#    ldflags: "-w -trimpath -v -o -arch=x86_64  -isysroot=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.0.sdk"
 #    mod_timestamp: "{{ .CommitTimestamp }}"
-#    flags:  -buildmode=c-archive -x -v -trimpath
-#  TODO 注意,这个iOS模拟器的还没搞定,不要使用
+#    flags:  "-buildmode=c-archive -trimpath -v -o -arch=x86_64  -isysroot=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.0.sdk"
+##  TODO 注意,这个iOS模拟器的还没搞定,不要使用
 #
 
 archives:

@@ -1,7 +1,8 @@
 package main
 
+// #include <stdlib.h>
+import "C"
 import (
-	"C"
 	"encoding/json"
 	_ "encoding/json"
 	_ "flag"
@@ -26,6 +27,8 @@ import (
 	"github.com/livekit/livekit-server/pkg/service"
 	"github.com/livekit/livekit-server/version"
 )
+
+var gServerPointer *unsafe.Pointer // 全局变量
 
 // 通过命令行参数启动服务
 //
@@ -119,7 +122,9 @@ func startByTerminal() int {
 				fmt.Printf("json error : %s", err)
 				return err
 			}
-			fmt.Printf("_config==>>%s \n", jsonText)
+			if jsonText == nil {
+				fmt.Printf("_config==>>%s \n", jsonText)
+			}
 
 			serverlogger.InitFromConfig(_config.Logging)
 			return startServer(context, &_config)
@@ -186,20 +191,39 @@ func startByArgument(jsonText string) unsafe.Pointer {
 		fmt.Printf("json error : %s", err)
 		return nil
 	}
-	fmt.Printf("_config==>>%s \n %s", jsonText, format)
+	if format == nil {
+		fmt.Printf("_config==>>%s \n %s", jsonText, format)
+	}
 
 	serverlogger.InitFromConfig(_config.Logging)
-	var pointer unsafe.Pointer //返回一个void指针
-	pointer, err = startServerOnlyConfig(&_config)
+	var service_ *service.LivekitServer //返回一个void指针
+	service_, err = startServerOnlyConfig(&_config)
 	if err != nil {
 		fmt.Printf("startServer error : %s", err)
 		return nil
 	}
-	if pointer == nil {
+	if service_ == nil {
 		fmt.Printf("我tm直接素质三连")
 		return nil
 	}
-	return pointer
+	serverMemAlloc := convertServerToCPointer(service_)
+	gServerPointer = &serverMemAlloc
+	return serverMemAlloc
+}
+
+//export stopServerByPointer
+func stopServerByPointer(pointer unsafe.Pointer) {
+	println("stopServerByPointer start")
+	var server *service.LivekitServer
+	println("")
+	println("stopServerByPointer calling from dart!!")
+	server = convertCPointerToGoPointer(pointer)
+	go server.Stop(true)
+	gServerPointer = nil
+	//freeing pointer
+	defer C.free(pointer)
+	runtime.GC()
+	println("stopServerByPointer called from dart!!")
 }
 
 // 生成key和secret
@@ -228,7 +252,7 @@ func createToken(pointer unsafe.Pointer, room string, identity string) string {
 	//apiKey string, apiSecret string,
 
 	var server *service.LivekitServer
-	server = serverPointerConvert(pointer)
+	server = convertCPointerToGoPointer(pointer)
 	conf := server.Config
 	apiKey := conf.Keys["key1"]
 	apiSecret := conf.Keys["key2"]
@@ -268,7 +292,8 @@ func init() {
 
 func main() {
 	//startByTerminal() //main函数通过命令行启动服务
-	startByArgument("{\n    \"Port\":7891,\n    \"BindAddresses\":[\n        \"127.0.0.1\",\n        \"[::1]\"\n    ],\n    \"PrometheusPort\":0,\n    \"RTC\":{\n        \"UDPPort\":0,\n        \"TCPPort\":7881,\n        \"ICEPortRangeStart\":50000,\n        \"ICEPortRangeEnd\":60000,\n        \"NodeIP\":\"0.0.0.0\",\n        \"STUNServers\":null,\n        \"TURNServers\":null,\n        \"UseExternalIP\":true,\n        \"UseICELite\":false,\n        \"Interfaces\":{\n            \"Includes\":null,\n            \"Excludes\":null\n        },\n        \"PacketBufferSize\":0,\n        \"PLIThrottle\":{\n            \"LowQuality\":0,\n            \"MidQuality\":0,\n            \"HighQuality\":0\n        },\n        \"CongestionControl\":{\n            \"Enabled\":false,\n            \"AllowPause\":false,\n            \"UseSendSideBWE\":false,\n            \"ProbeMode\":\"\",\n            \"MinChannelCapacity\":0\n        },\n        \"ForceTCP\":false\n    },\n    \"Redis\":{\n        \"Address\":\"\",\n        \"Username\":\"\",\n        \"Password\":\"\",\n        \"DB\":0,\n        \"UseTLS\":false,\n        \"MasterName\":\"\",\n        \"SentinelUsername\":\"\",\n        \"SentinelPassword\":\"\",\n        \"SentinelAddresses\":null\n    },\n    \"Audio\":{\n        \"ActiveLevel\":0,\n        \"MinPercentile\":0,\n        \"UpdateInterval\":0,\n        \"SmoothIntervals\":0\n    },\n    \"Video\":{\n        \"DynacastPauseDelay\":0\n    },\n    \"Room\":{\n        \"AutoCreate\":true,\n        \"EnabledCodecs\":[\n            {\n                \"Mime\":\"audio/opus\",\n                \"FmtpLine\":\"\"\n            },\n            {\n                \"Mime\":\"video/VP8\",\n                \"FmtpLine\":\"\"\n            },\n            {\n                \"Mime\":\"video/H264\",\n                \"FmtpLine\":\"\"\n            }\n        ],\n        \"MaxParticipants\":0,\n        \"EmptyTimeout\":300,\n        \"EnableRemoteUnmute\":true,\n        \"MaxMetadataSize\":0\n    },\n    \"TURN\":{\n        \"Enabled\":false,\n        \"Domain\":\"\",\n        \"CertFile\":\"\",\n        \"KeyFile\":\"\",\n        \"TLSPort\":0,\n        \"UDPPort\":0,\n        \"RelayPortRangeStart\":0,\n        \"RelayPortRangeEnd\":0,\n        \"ExternalTLS\":false\n    },\n    \"Ingress\":{\n        \"RTMPBaseURL\":\"\"\n    },\n    \"WebHook\":{\n        \"URLs\":null,\n        \"APIKey\":\"\"\n    },\n    \"NodeSelector\":{\n        \"Kind\":\"\",\n        \"SortBy\":\"\",\n        \"CPULoadLimit\":0,\n        \"SysloadLimit\":0,\n        \"Regions\":null\n    },\n    \"KeyFile\":\"\",\n    \"Keys\":{\n        \"key1\":\"APIdCLQLh5E8P2u\",\n        \"key2\":\"kArfeuTGLDc3WLQ7JsGu6bQTAr0CHblnURijqHgHGR5\"\n    },\n    \"Region\":\"\",\n    \"LogLevel\":\"\",\n    \"Logging\":{\n        \"JSON\":true,\n        \"Level\":\"info\",\n        \"Sample\":false,\n        \"PionLevel\":\"error\"\n    },\n    \"Limit\":{\n        \"NumTracks\":0,\n        \"BytesPerSec\":0\n    },\n    \"Development\":false\n}\n\n")
+	pointer := startByArgument("{\n    \"Port\":7891,\n    \"BindAddresses\":[\n        \"127.0.0.1\",\n        \"[::1]\"\n    ],\n    \"PrometheusPort\":0,\n    \"RTC\":{\n        \"UDPPort\":0,\n        \"TCPPort\":7881,\n        \"ICEPortRangeStart\":50000,\n        \"ICEPortRangeEnd\":60000,\n        \"NodeIP\":\"0.0.0.0\",\n        \"STUNServers\":null,\n        \"TURNServers\":null,\n        \"UseExternalIP\":true,\n        \"UseICELite\":false,\n        \"Interfaces\":{\n            \"Includes\":null,\n            \"Excludes\":null\n        },\n        \"PacketBufferSize\":0,\n        \"PLIThrottle\":{\n            \"LowQuality\":0,\n            \"MidQuality\":0,\n            \"HighQuality\":0\n        },\n        \"CongestionControl\":{\n            \"Enabled\":false,\n            \"AllowPause\":false,\n            \"UseSendSideBWE\":false,\n            \"ProbeMode\":\"\",\n            \"MinChannelCapacity\":0\n        },\n        \"ForceTCP\":false\n    },\n    \"Redis\":{\n        \"Address\":\"\",\n        \"Username\":\"\",\n        \"Password\":\"\",\n        \"DB\":0,\n        \"UseTLS\":false,\n        \"MasterName\":\"\",\n        \"SentinelUsername\":\"\",\n        \"SentinelPassword\":\"\",\n        \"SentinelAddresses\":null\n    },\n    \"Audio\":{\n        \"ActiveLevel\":0,\n        \"MinPercentile\":0,\n        \"UpdateInterval\":0,\n        \"SmoothIntervals\":0\n    },\n    \"Video\":{\n        \"DynacastPauseDelay\":0\n    },\n    \"Room\":{\n        \"AutoCreate\":true,\n        \"EnabledCodecs\":[\n            {\n                \"Mime\":\"audio/opus\",\n                \"FmtpLine\":\"\"\n            },\n            {\n                \"Mime\":\"video/VP8\",\n                \"FmtpLine\":\"\"\n            },\n            {\n                \"Mime\":\"video/H264\",\n                \"FmtpLine\":\"\"\n            }\n        ],\n        \"MaxParticipants\":0,\n        \"EmptyTimeout\":300,\n        \"EnableRemoteUnmute\":true,\n        \"MaxMetadataSize\":0\n    },\n    \"TURN\":{\n        \"Enabled\":false,\n        \"Domain\":\"\",\n        \"CertFile\":\"\",\n        \"KeyFile\":\"\",\n        \"TLSPort\":0,\n        \"UDPPort\":0,\n        \"RelayPortRangeStart\":0,\n        \"RelayPortRangeEnd\":0,\n        \"ExternalTLS\":false\n    },\n    \"Ingress\":{\n        \"RTMPBaseURL\":\"\"\n    },\n    \"WebHook\":{\n        \"URLs\":null,\n        \"APIKey\":\"\"\n    },\n    \"NodeSelector\":{\n        \"Kind\":\"\",\n        \"SortBy\":\"\",\n        \"CPULoadLimit\":0,\n        \"SysloadLimit\":0,\n        \"Regions\":null\n    },\n    \"KeyFile\":\"\",\n    \"Keys\":{\n        \"key1\":\"APIdCLQLh5E8P2u\",\n        \"key2\":\"kArfeuTGLDc3WLQ7JsGu6bQTAr0CHblnURijqHgHGR5\"\n    },\n    \"Region\":\"\",\n    \"LogLevel\":\"\",\n    \"Logging\":{\n        \"JSON\":true,\n        \"Level\":\"info\",\n        \"Sample\":false,\n        \"PionLevel\":\"error\"\n    },\n    \"Limit\":{\n        \"NumTracks\":0,\n        \"BytesPerSec\":0\n    },\n    \"Development\":false\n}\n\n")
+	stopServerByPointer(pointer)
 }
 
 func startServer(c *cli.Context, conf *config.Config) error {
@@ -311,14 +336,17 @@ func startServer(c *cli.Context, conf *config.Config) error {
 	return server.Start()
 }
 
-func startServerOnlyConfig(conf *config.Config) (unsafe.Pointer, error) {
+func startServerOnlyConfig(conf *config.Config) (*service.LivekitServer, error) {
 	rand.Seed(time.Now().UnixNano())
+	println("")
 	currentNode, err := routing.NewLocalNode(conf)
 	if err != nil {
 		return nil, err
 	}
+	logger.Infow("startServer InitializeServer", "error:", err)
 	server, err := service.InitializeServer(conf, currentNode)
 	if err != nil {
+		logger.Infow("startServer InitializeServer failure", "error:", err)
 		return nil, err
 	}
 	sigChan := make(chan os.Signal, 1)
@@ -328,16 +356,57 @@ func startServerOnlyConfig(conf *config.Config) (unsafe.Pointer, error) {
 		logger.Infow("exit requested, shutting down", "signal", sig)
 		server.Stop(false)
 	}()
-	server.Start()
-	var p unsafe.Pointer
-	p = unsafe.Pointer(&server)
-	return p, nil //返回一个void*指针
+	go server.Start()
+
+	println("startServer get void pointer success")
+	println("")
+	return server, nil //返回一个void*指针
+}
+
+func convertServerToCPointer(server *service.LivekitServer) unsafe.Pointer {
+	//allocate memory on C heap. we send the server address in this pointer
+	//allocated memory is freed in Eb_TcpSecureStreamCloseListener()
+	serverMemAlloc := C.malloc(C.size_t(unsafe.Sizeof(server)))
+	//serverMemAlloc := C.malloc(C.size_t(unsafe.Sizeof(uintptr(0))))
+	//create array to write the address in the array
+	a := (*[1]*service.LivekitServer)(serverMemAlloc)
+	//save the address in index 0 of the array
+	a[0] = &(*(*service.LivekitServer)(unsafe.Pointer(&server)))
+	fmt.Printf("convertServerToCPointer>>>Address of server=%p\n", &server)
+	fmt.Printf("convertServerToCPointer>>>Address of config=%p\n", &(server.Config))
+	fmt.Printf("convertServerToCPointer>>>Address of alloc=%p\n", &serverMemAlloc)
+	fmt.Printf("convertServerToCPointer>>> port=%d\n", server.Config.Port)
+	fmt.Printf("convertServerToCPointer>>> IsRunning=%t\n", server.IsRunning())
+	fmt.Printf("convertServerToCPointer>>> String=%s\n", server.Node().String())
+	return serverMemAlloc
 }
 
 // 转换void* 指针
-func serverPointerConvert(pointer unsafe.Pointer) *service.LivekitServer {
-	var serverPointer = (*service.LivekitServer)(pointer)
-	return serverPointer
+func convertCPointerToGoPointer(serverMemAlloc unsafe.Pointer) *service.LivekitServer {
+	println("${(pointer)[0]}")
+	if serverMemAlloc == nil {
+		return nil
+	}
+
+	parseStructPointer := false
+
+	var server *service.LivekitServer
+	if parseStructPointer {
+		p := &(*((*[1]*service.LivekitServer)(serverMemAlloc)[0]))
+		p2 := unsafe.Pointer(p.Config)
+		server = (*service.LivekitServer)(p2)
+	} else {
+		a := (**[1]*service.LivekitServer)(serverMemAlloc)
+		server = (*a)[0]
+	}
+	fmt.Printf("convertCPointerToGoPointer>>>Address of server=%p\n", &server)
+	fmt.Printf("convertCPointerToGoPointer>>>Address of config=%p\n", &(server.Config))
+	fmt.Printf("convertCPointerToGoPointer>>>Address of alloc=%p\n", &serverMemAlloc)
+	fmt.Printf("convertCPointerToGoPointer>>> port=%d\n", server.Config.Port)
+	fmt.Printf("convertCPointerToGoPointer>>> IsRunning=%t\n", server.IsRunning())
+	fmt.Printf("convertCPointerToGoPointer>>> String=%s\n", server.Node().String())
+	println("convertCPointerToGoPointer")
+	return server
 }
 
 type Response struct {
