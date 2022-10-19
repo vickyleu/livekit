@@ -28,170 +28,169 @@ const (
 )
 
 type Config struct {
-	Port           uint32             `yaml:"port"`
-	BindAddresses  []string           `yaml:"bind_addresses"`
-	PrometheusPort uint32             `yaml:"prometheus_port,omitempty"`
-	RTC            RTCConfig          `yaml:"rtc,omitempty"`
-	Redis          RedisConfig        `yaml:"redis,omitempty"`
-	Audio          AudioConfig        `yaml:"audio,omitempty"`
-	Video          VideoConfig        `yaml:"video,omitempty"`
-	Room           RoomConfig         `yaml:"room,omitempty"`
-	TURN           TURNConfig         `yaml:"turn,omitempty"`
-	Ingress        IngressConfig      `yaml:ingress,omitempty"`
-	WebHook        WebHookConfig      `yaml:"webhook,omitempty"`
-	NodeSelector   NodeSelectorConfig `yaml:"node_selector,omitempty"`
-	KeyFile        string             `yaml:"key_file,omitempty"`
-	Keys           map[string]string  `yaml:"keys,omitempty"`
-	Region         string             `yaml:"region,omitempty"`
+	Port           uint32             `yaml:"port" json:"port"`
+	BindAddresses  []string           `yaml:"bind_addresses" json:"bindAddresses"`
+	PrometheusPort uint32             `yaml:"prometheus_port,omitempty" json:"prometheusPort"`
+	RTC            RTCConfig          `yaml:"rtc,omitempty" json:"rtc"`
+	Redis          RedisConfig        `yaml:"redis,omitempty" json:"redis"`
+	Audio          AudioConfig        `yaml:"audio,omitempty" json:"audio"`
+	Video          VideoConfig        `yaml:"video,omitempty" json:"video"`
+	Room           RoomConfig         `yaml:"room,omitempty" json:"room"`
+	TURN           TURNConfig         `yaml:"turn,omitempty" json:"turn"`
+	Ingress        IngressConfig      `yaml:ingress,omitempty" json:"ingress"`
+	WebHook        WebHookConfig      `yaml:"webhook,omitempty" json:"webHook"`
+	NodeSelector   NodeSelectorConfig `yaml:"node_selector,omitempty" json:"nodeSelector"`
+	KeyFile        string             `yaml:"key_file,omitempty" json:"keyFile"`
+	Keys           map[string]string  `yaml:"keys,omitempty" json:"keys"`
+	Region         string             `yaml:"region,omitempty" json:"region"`
 	// LogLevel is deprecated
-	LogLevel string        `yaml:"log_level,omitempty"`
-	Logging  LoggingConfig `yaml:"logging,omitempty"`
-	Limit    LimitConfig   `yaml:"limit,omitempty"`
-
-	Development bool `yaml:"development,omitempty"`
+	LogLevel    string        `yaml:"log_level,omitempty" json:"logLevel"`
+	Logging     LoggingConfig `yaml:"logging,omitempty" json:"logging"`
+	Limit       LimitConfig   `yaml:"limit,omitempty" json:"limit"`
+	Development bool          `yaml:"development,omitempty" json:"development"`
 }
 
 type RTCConfig struct {
-	UDPPort           uint32           `yaml:"udp_port,omitempty"`
-	TCPPort           uint32           `yaml:"tcp_port,omitempty"`
-	ICEPortRangeStart uint32           `yaml:"port_range_start,omitempty"`
-	ICEPortRangeEnd   uint32           `yaml:"port_range_end,omitempty"`
-	NodeIP            string           `yaml:"node_ip,omitempty"`
-	STUNServers       []string         `yaml:"stun_servers,omitempty"`
-	TURNServers       []TURNServer     `yaml:"turn_servers,omitempty"`
-	UseExternalIP     bool             `yaml:"use_external_ip"`
-	UseICELite        bool             `yaml:"use_ice_lite,omitempty"`
-	Interfaces        InterfacesConfig `yaml:"interfaces"`
+	UDPPort           uint32           `yaml:"udp_port,omitempty" json:"udpPort"`
+	TCPPort           uint32           `yaml:"tcp_port,omitempty" json:"tcpPort"`
+	ICEPortRangeStart uint32           `yaml:"port_range_start,omitempty" json:"icePortRangeStart"`
+	ICEPortRangeEnd   uint32           `yaml:"port_range_end,omitempty" json:"icePortRangeEnd"`
+	NodeIP            string           `yaml:"node_ip,omitempty" json:"nodeIP"`
+	STUNServers       []string         `yaml:"stun_servers,omitempty" json:"stunServers"`
+	TURNServers       []TURNServer     `yaml:"turn_servers,omitempty" json:"turnServers"`
+	UseExternalIP     bool             `yaml:"use_external_ip" json:"useExternalIP"`
+	UseICELite        bool             `yaml:"use_ice_lite,omitempty" json:"useICELite"`
+	Interfaces        InterfacesConfig `yaml:"interfaces" json:"interfaces"`
 
 	// Number of packets to buffer for NACK
-	PacketBufferSize int `yaml:"packet_buffer_size,omitempty"`
+	PacketBufferSize int `yaml:"packet_buffer_size,omitempty" json:"packetBufferSize"`
 
 	// Throttle periods for pli/fir rtcp packets
-	PLIThrottle PLIThrottleConfig `yaml:"pli_throttle,omitempty"`
+	PLIThrottle PLIThrottleConfig `yaml:"pli_throttle,omitempty" json:"pliThrottle"`
 
-	CongestionControl CongestionControlConfig `yaml:"congestion_control,omitempty"`
+	CongestionControl CongestionControlConfig `yaml:"congestion_control,omitempty" json:"congestionControl"`
 
 	// for testing, disable UDP
-	ForceTCP bool `yaml:"force_tcp,omitempty"`
+	ForceTCP bool `yaml:"force_tcp,omitempty" json:"forceTCP"`
 }
 
 type TURNServer struct {
-	Host       string `yaml:"host"`
-	Port       int    `yaml:"port"`
-	Protocol   string `yaml:"protocol"`
-	Username   string `yaml:"username,omitempty"`
-	Credential string `yaml:"credential,omitempty"`
+	Host       string `yaml:"host" json:"host"`
+	Port       int    `yaml:"port" json:"port"`
+	Protocol   string `yaml:"protocol" json:"protocol"`
+	Username   string `yaml:"username,omitempty" json:"username"`
+	Credential string `yaml:"credential,omitempty" json:"credential"`
 }
 
 type PLIThrottleConfig struct {
-	LowQuality  time.Duration `yaml:"low_quality,omitempty"`
-	MidQuality  time.Duration `yaml:"mid_quality,omitempty"`
-	HighQuality time.Duration `yaml:"high_quality,omitempty"`
+	LowQuality  time.Duration `yaml:"low_quality,omitempty" json:"lowQuality"`
+	MidQuality  time.Duration `yaml:"mid_quality,omitempty" json:"midQuality"`
+	HighQuality time.Duration `yaml:"high_quality,omitempty" json:"highQuality"`
 }
 
 type CongestionControlConfig struct {
-	Enabled            bool                       `yaml:"enabled"`
-	AllowPause         bool                       `yaml:"allow_pause"`
-	UseSendSideBWE     bool                       `yaml:"send_side_bandwidth_estimation,omitempty"`
-	ProbeMode          CongestionControlProbeMode `yaml:"padding_mode,omitempty"`
-	MinChannelCapacity int64                      `yaml:"min_channel_capacity,omitempty"`
+	Enabled            bool                       `yaml:"enabled" json:"enabled"`
+	AllowPause         bool                       `yaml:"allow_pause" json:"allowPause"`
+	UseSendSideBWE     bool                       `yaml:"send_side_bandwidth_estimation,omitempty" json:"useSendSideBWE"`
+	ProbeMode          CongestionControlProbeMode `yaml:"padding_mode,omitempty" json:"probeMode"`
+	MinChannelCapacity int64                      `yaml:"min_channel_capacity,omitempty" json:"minChannelCapacity"`
 }
 
 type InterfacesConfig struct {
-	Includes []string `yaml:"includes"`
-	Excludes []string `yaml:"excludes"`
+	Includes []string `yaml:"includes" json:"includes"`
+	Excludes []string `yaml:"excludes" json:"excludes"`
 }
 
 type AudioConfig struct {
 	// minimum level to be considered active, 0-127, where 0 is loudest
-	ActiveLevel uint8 `yaml:"active_level"`
+	ActiveLevel uint8 `yaml:"active_level" json:"activeLevel"`
 	// percentile to measure, a participant is considered active if it has exceeded the ActiveLevel more than
 	// MinPercentile% of the time
-	MinPercentile uint8 `yaml:"min_percentile"`
+	MinPercentile uint8 `yaml:"min_percentile" json:"minPercentile"`
 	// interval to update clients, in ms
-	UpdateInterval uint32 `yaml:"update_interval"`
+	UpdateInterval uint32 `yaml:"update_interval" json:"updateInterval"`
 	// smoothing for audioLevel values sent to the client.
 	// audioLevel will be an average of `smooth_intervals`, 0 to disable
-	SmoothIntervals uint32 `yaml:"smooth_intervals"`
+	SmoothIntervals uint32 `yaml:"smooth_intervals" json:"smoothIntervals"`
 }
 
 type VideoConfig struct {
-	DynacastPauseDelay time.Duration `yaml:"dynacast_pause_delay,omitempty"`
+	DynacastPauseDelay time.Duration `yaml:"dynacast_pause_delay,omitempty" json:"dynacastPauseDelay"`
 }
 
 type RedisConfig struct {
-	Address           string   `yaml:"address"`
-	Username          string   `yaml:"username"`
-	Password          string   `yaml:"password"`
-	DB                int      `yaml:"db"`
-	UseTLS            bool     `yaml:"use_tls"`
-	MasterName        string   `yaml:"sentinel_master_name"`
-	SentinelUsername  string   `yaml:"sentinel_username"`
-	SentinelPassword  string   `yaml:"sentinel_password"`
-	SentinelAddresses []string `yaml:"sentinel_addresses"`
+	Address           string   `yaml:"address" json:"address"`
+	Username          string   `yaml:"username" json:"username"`
+	Password          string   `yaml:"password" json:"password"`
+	DB                int      `yaml:"db" json:"db"`
+	UseTLS            bool     `yaml:"use_tls" json:"useTLS"`
+	MasterName        string   `yaml:"sentinel_master_name" json:"masterName"`
+	SentinelUsername  string   `yaml:"sentinel_username" json:"sentinelUsername"`
+	SentinelPassword  string   `yaml:"sentinel_password" json:"sentinelPassword"`
+	SentinelAddresses []string `yaml:"sentinel_addresses" json:"sentinelAddresses"`
 }
 
 type RoomConfig struct {
 	// enable rooms to be automatically created
-	AutoCreate         bool        `yaml:"auto_create"`
-	EnabledCodecs      []CodecSpec `yaml:"enabled_codecs"`
-	MaxParticipants    uint32      `yaml:"max_participants"`
-	EmptyTimeout       uint32      `yaml:"empty_timeout"`
-	EnableRemoteUnmute bool        `yaml:"enable_remote_unmute"`
-	MaxMetadataSize    uint32      `yaml:"max_metadata_size"`
+	AutoCreate         bool        `yaml:"auto_create" json:"autoCreate"`
+	EnabledCodecs      []CodecSpec `yaml:"enabled_codecs" json:"enabledCodecs"`
+	MaxParticipants    uint32      `yaml:"max_participants" json:"maxParticipants"`
+	EmptyTimeout       uint32      `yaml:"empty_timeout" json:"emptyTimeout"`
+	EnableRemoteUnmute bool        `yaml:"enable_remote_unmute" json:"enableRemoteUnmute"`
+	MaxMetadataSize    uint32      `yaml:"max_metadata_size" json:"maxMetadataSize"`
 }
 
 type CodecSpec struct {
-	Mime     string `yaml:"mime"`
-	FmtpLine string `yaml:"fmtp_line"`
+	Mime     string `yaml:"mime" json:"mime"`
+	FmtpLine string `yaml:"fmtp_line" json:"fmtpLine"`
 }
 
 type LoggingConfig struct {
-	logger.Config `yaml:",inline"`
-	PionLevel     string `yaml:"pion_level,omitempty"`
+	logger.Config `yaml:",inline" `
+	PionLevel     string `yaml:"pion_level,omitempty" json:"pionLevel"`
 }
 
 type TURNConfig struct {
-	Enabled             bool   `yaml:"enabled"`
-	Domain              string `yaml:"domain"`
-	CertFile            string `yaml:"cert_file"`
-	KeyFile             string `yaml:"key_file"`
-	TLSPort             int    `yaml:"tls_port"`
-	UDPPort             int    `yaml:"udp_port"`
-	RelayPortRangeStart uint16 `yaml:"relay_range_start,omitempty"`
-	RelayPortRangeEnd   uint16 `yaml:"relay_range_end,omitempty"`
-	ExternalTLS         bool   `yaml:"external_tls"`
+	Enabled             bool   `yaml:"enabled" json:"enabled"`
+	Domain              string `yaml:"domain" json:"domain"`
+	CertFile            string `yaml:"cert_file" json:"cert_file"`
+	KeyFile             string `yaml:"key_file" json:"key_file"`
+	TLSPort             int    `yaml:"tls_port" json:"tls_port"`
+	UDPPort             int    `yaml:"udp_port" json:"udp_port"`
+	RelayPortRangeStart uint16 `yaml:"relay_range_start,omitempty" json:"relay_range_start"`
+	RelayPortRangeEnd   uint16 `yaml:"relay_range_end,omitempty" json:"relay_range_end"`
+	ExternalTLS         bool   `yaml:"external_tls" json:"external_tls"`
 }
 
 type WebHookConfig struct {
-	URLs []string `yaml:"urls"`
+	URLs []string `yaml:"urls" json:"urls"`
 	// key to use for webhook
-	APIKey string `yaml:"api_key"`
+	APIKey string `yaml:"api_key" json:"apiKey"`
 }
 
 type NodeSelectorConfig struct {
-	Kind         string         `yaml:"kind"`
-	SortBy       string         `yaml:"sort_by"`
-	CPULoadLimit float32        `yaml:"cpu_load_limit"`
-	SysloadLimit float32        `yaml:"sysload_limit"`
-	Regions      []RegionConfig `yaml:"regions"`
+	Kind         string         `yaml:"kind" json:"kind"`
+	SortBy       string         `yaml:"sort_by" json:"sortBy"`
+	CPULoadLimit float32        `yaml:"cpu_load_limit" json:"cpuLoadLimit"`
+	SysloadLimit float32        `yaml:"sysload_limit" json:"sysloadLimit"`
+	Regions      []RegionConfig `yaml:"regions" json:"regions"`
 }
 
 // RegionConfig lists available regions and their latitude/longitude, so the selector would prefer
 // regions that are closer
 type RegionConfig struct {
-	Name string  `yaml:"name"`
-	Lat  float64 `yaml:"lat"`
-	Lon  float64 `yaml:"lon"`
+	Name string  `yaml:"name" json:"name"`
+	Lat  float64 `yaml:"lat" json:"lat"`
+	Lon  float64 `yaml:"lon" json:"lon"`
 }
 
 type LimitConfig struct {
-	NumTracks   int32   `yaml:"num_tracks"`
-	BytesPerSec float32 `yaml:"bytes_per_sec"`
+	NumTracks   int32   `yaml:"num_tracks" json:"numTracks"`
+	BytesPerSec float32 `yaml:"bytes_per_sec" json:"bytesPerSec"`
 }
 
 type IngressConfig struct {
-	RTMPBaseURL string `yaml:"rtmp_base_url"`
+	RTMPBaseURL string `yaml:"rtmp_base_url" json:"rtmpBaseUrl"`
 }
 
 func NewConfig(confString string, c *cli.Context) (*Config, error) {

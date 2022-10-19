@@ -4,122 +4,122 @@ before:
     - go mod tidy
     - go generate ./...
 builds:
-#  - id: livekit-ios-arm
-#    env:
-#      - CGO_ENABLED=1
-#      - CC=/usr/local/go/misc/ios/clangwrap.sh
-#    main: ./cmd/server
-#    binary: livekit-server.dylib
-#    goos:
-#      - ios
-#    goarm:
-#      - "6"
-#      - "7"
-#    goarch:
-#      - arm64
-#      - arm
-#    ldflags: -s -w -v
-#    mod_timestamp: "{{ .CommitTimestamp }}"
-#    flags: -buildmode=c-archive -x -v -trimpath
-#
-#
-##xcrun -sdk iphoneos clang -arch armv7 -fpic -shared -Wl,-all_load libmystatic.a -framework Corefoundation -o libmydynamic.dylib
-#  - id: livekit-linux-x86
-#    env:
-#      - CGO_ENABLED=1
-#      - CC=x86_64-unknown-linux-gnu-gcc
-#      - CXX=x86_64-unknown-linux-gnu-g++
-#    main: ./cmd/server
-#    binary: livekit-server.so
-#    goarm:
-#      - "6"
-#      - "7"
-#    goarch:
-#      - amd64
-#    goos:
-#      - linux
-#    ldflags: -s -w
-#    mod_timestamp: "{{ .CommitTimestamp }}"
-#    flags: -buildmode=c-shared -x -v -trimpath
-#
-#
-#  - id: livekit-linux-arm64
-#    env:
-#      - CGO_ENABLED=1
-#      - CC=aarch64-unknown-linux-gnu-gcc
-#      - CXX=aarch64-unknown-linux-gnu-g++
-#    main: ./cmd/server
-#    binary: livekit-server.so
-#    goarm:
-#      - "6"
-#      - "7"
-#    goarch:
-#      - arm64
-#    goos:
-#      - linux
-#    ldflags: -s -w
-#    mod_timestamp: "{{ .CommitTimestamp }}"
-#    flags: -buildmode=c-shared -x -v -trimpath
-#
-#
-#  - id: livekit-android-x86
-#    env:
-#      - CGO_ENABLED=1
-#      - CC=/Users/vickyleu/Develop/Android/SDK/ndk/25.0.8775105/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android33-clang
-#      - CXX=/Users/vickyleu/Develop/Android/SDK/ndk/25.0.8775105/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android33-clang++
-#      - CGO_LDFLAGS=-s -fPIE -pie -rdynamic -Wall -lstdc++  #//-lbinder -lutils -landroid_runtime -Lbin -linvoke
-#    main: ./cmd/server
-#    binary: livekit-server.so
-#    goos:
-#      - android
-#    goarm:
-#      - "6"
-#      - "7"
-#    goarch:
-#      - amd64
-#    ldflags: -s -w
-#    mod_timestamp: "{{ .CommitTimestamp }}"
-#    flags: -buildmode=c-shared -x -v -trimpath
-#
-#
-#  - id: livekit-android-arm64
-#    env:
-#      - CGO_ENABLED=1
-#      - CC=/Users/vickyleu/Develop/Android/SDK/ndk/25.0.8775105/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android33-clang
-#      - CXX=/Users/vickyleu/Develop/Android/SDK/ndk/25.0.8775105/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android33-clang++
-#      - CGO_LDFLAGS=-s -fPIE -pie -rdynamic -Wall -lstdc++  #//-lbinder -lutils -landroid_runtime -Lbin -linvoke
-#    main: ./cmd/server
-#    binary: livekit-server.so
-#    goos:
-#      - android
-#    goarm:
-#      - "6"
-#      - "7"
-#    goarch:
-#      - arm64
-#    ldflags: -s -w
-#    mod_timestamp: "{{ .CommitTimestamp }}"
-#    flags: -buildmode=c-shared -x -v -trimpath
-#
-#
-#  - id: livekit-android-arm
-#    env:
-#      - CGO_ENABLED=1
-#      - CC=/Users/vickyleu/Develop/Android/SDK/ndk/25.0.8775105/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi33-clang
-#      - CXX=/Users/vickyleu/Develop/Android/SDK/ndk/25.0.8775105/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi33-clang++
-#      - CGO_LDFLAGS=-s -fPIE -pie -rdynamic -Wall -lstdc++ # -lbinder -lutils -landroid_runtime -Lbin -linvoke
-#    main: ./cmd/server
-#    binary: livekit-server.so
-#    goos:
-#      - android
-#    goarm:
-#      - "6"
-#      - "7"
-#    goarch:
-#      - arm
-#    ldflags: -s -w
-#    mod_timestamp: "{{ .CommitTimestamp }}"
-#    flags: -buildmode=c-shared -x -v -trimpath
+  - id: livekit-ios-arm
+    env:
+      - CGO_ENABLED=1
+      - CC=/usr/local/go/misc/ios/clangwrap.sh
+    main: ./cmd/server
+    binary: livekit-server.dylib
+    goos:
+      - ios
+    goarm:
+      - "6"
+      - "7"
+    goarch:
+      - arm64
+      - arm
+    ldflags: -s -w -v
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    flags: -buildmode=c-archive -x -v -trimpath
+
+
+#xcrun -sdk iphoneos clang -arch armv7 -fpic -shared -Wl,-all_load libmystatic.a -framework Corefoundation -o libmydynamic.dylib
+  - id: livekit-linux-x86
+    env:
+      - CGO_ENABLED=1
+      - CC=x86_64-unknown-linux-gnu-gcc
+      - CXX=x86_64-unknown-linux-gnu-g++
+    main: ./cmd/server
+    binary: livekit-server.so
+    goarm:
+      - "6"
+      - "7"
+    goarch:
+      - amd64
+    goos:
+      - linux
+    ldflags: -s -w
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    flags: -buildmode=c-shared -x -v -trimpath
+
+
+  - id: livekit-linux-arm64
+    env:
+      - CGO_ENABLED=1
+      - CC=aarch64-unknown-linux-gnu-gcc
+      - CXX=aarch64-unknown-linux-gnu-g++
+    main: ./cmd/server
+    binary: livekit-server.so
+    goarm:
+      - "6"
+      - "7"
+    goarch:
+      - arm64
+    goos:
+      - linux
+    ldflags: -s -w
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    flags: -buildmode=c-shared -x -v -trimpath
+
+
+  - id: livekit-android-x86
+    env:
+      - CGO_ENABLED=1
+      - CC=/Users/vickyleu/Develop/Android/SDK/ndk/25.0.8775105/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android33-clang
+      - CXX=/Users/vickyleu/Develop/Android/SDK/ndk/25.0.8775105/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android33-clang++
+      - CGO_LDFLAGS=-s -fPIE -pie -rdynamic -Wall -lstdc++  #//-lbinder -lutils -landroid_runtime -Lbin -linvoke
+    main: ./cmd/server
+    binary: livekit-server.so
+    goos:
+      - android
+    goarm:
+      - "6"
+      - "7"
+    goarch:
+      - amd64
+    ldflags: -s -w
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    flags: -buildmode=c-shared -x -v -trimpath
+
+
+  - id: livekit-android-arm64
+    env:
+      - CGO_ENABLED=1
+      - CC=/Users/vickyleu/Develop/Android/SDK/ndk/25.0.8775105/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android33-clang
+      - CXX=/Users/vickyleu/Develop/Android/SDK/ndk/25.0.8775105/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android33-clang++
+      - CGO_LDFLAGS=-s -fPIE -pie -rdynamic -Wall -lstdc++  #//-lbinder -lutils -landroid_runtime -Lbin -linvoke
+    main: ./cmd/server
+    binary: livekit-server.so
+    goos:
+      - android
+    goarm:
+      - "6"
+      - "7"
+    goarch:
+      - arm64
+    ldflags: -s -w
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    flags: -buildmode=c-shared -x -v -trimpath
+
+
+  - id: livekit-android-arm
+    env:
+      - CGO_ENABLED=1
+      - CC=/Users/vickyleu/Develop/Android/SDK/ndk/25.0.8775105/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi33-clang
+      - CXX=/Users/vickyleu/Develop/Android/SDK/ndk/25.0.8775105/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi33-clang++
+      - CGO_LDFLAGS=-s -fPIE -pie -rdynamic -Wall -lstdc++ # -lbinder -lutils -landroid_runtime -Lbin -linvoke
+    main: ./cmd/server
+    binary: livekit-server.so
+    goos:
+      - android
+    goarm:
+      - "6"
+      - "7"
+    goarch:
+      - arm
+    ldflags: -s -w
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    flags: -buildmode=c-shared -x -v -trimpath
 
 
   - id: livekit-darwin
@@ -142,43 +142,43 @@ builds:
     mod_timestamp: "{{ .CommitTimestamp }}"
     flags: -buildmode=c-shared -x -v -trimpath
 
-#
-#  - id: livekit-x86
-#    env:
-#      - CGO_ENABLED=1
-#      - CC=x86_64-w64-mingw32-gcc
-#      - CXX=x86_64-w64-mingw32-g++
-#    main: ./cmd/server
-#    binary: livekit-server
-#    goarm:
-#      - "6"
-#      - "7"
-#    goarch:
-#      - amd64
-#    goos:
-#      - windows
-#    mod_timestamp: "{{ .CommitTimestamp }}"
-#    ldflags: -s -w
-#    flags: -buildmode=c-shared -x -v -trimpath
-#
-#
-#  - id: livekit-arm64
-#    env:
-#      - CGO_ENABLED=1
-#      - CC=zig cc -target aarch64-windows-gnu
-#      - CXX=zig c++ -target aarch64-windows-gnu
-#    main: ./cmd/server
-#    binary: livekit-server
-#    goarm:
-#      - "6"
-#      - "7"
-#    goarch:
-#      - arm64
-#    goos:
-#      - windows
-#    mod_timestamp: "{{ .CommitTimestamp }}"
-#    ldflags: -s -w
-#    flags: -buildmode=c-shared -x -v -trimpath
+
+  - id: livekit-x86
+    env:
+      - CGO_ENABLED=1
+      - CC=x86_64-w64-mingw32-gcc
+      - CXX=x86_64-w64-mingw32-g++
+    main: ./cmd/server
+    binary: livekit-server
+    goarm:
+      - "6"
+      - "7"
+    goarch:
+      - amd64
+    goos:
+      - windows
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    ldflags: -s -w
+    flags: -buildmode=c-shared -x -v -trimpath
+
+
+  - id: livekit-arm64
+    env:
+      - CGO_ENABLED=1
+      - CC=zig cc -target aarch64-windows-gnu
+      - CXX=zig c++ -target aarch64-windows-gnu
+    main: ./cmd/server
+    binary: livekit-server
+    goarm:
+      - "6"
+      - "7"
+    goarch:
+      - arm64
+    goos:
+      - windows
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    ldflags: -s -w
+    flags: -buildmode=c-shared -x -v -trimpath
 
 
 #

@@ -241,31 +241,42 @@ func (s *LivekitServer) Start() error {
 
 func (s *LivekitServer) Stop(force bool) {
 	// wait for all participants to exit
-	logger.Infow("livekit is exit, bye bye -1 !!")
+	//logger.Infow("livekit is exit, bye bye -1 !!")
 	s.router.Drain()
-	logger.Infow("livekit is exit, bye bye -1.5 !!")
+	if s.turnServer != nil {
+		go func() {
+			err := s.turnServer.Close()
+			if err != nil {
+				fmt.Printf("关闭TURN服务失败%s\n", err)
+			} else {
+				fmt.Printf("关闭TURN服务\n")
+			}
+		}()
+	}
+	//logger.Infow("livekit is exit, bye bye -1.5 !!")
 	partTicker := time.NewTicker(5 * time.Second)
-	logger.Infow("livekit is exit, bye bye -1.55 !!")
+	//logger.Infow("livekit is exit, bye bye -1.55 !!")
 	waitingForParticipants := !force && s.roomManager.HasParticipants()
-	logger.Infow("livekit is exit, bye bye -1.555 !!")
+	//logger.Infow("livekit is exit, bye bye -1.555 !!")
 	for waitingForParticipants {
 		<-partTicker.C
 		logger.Infow("waiting for participants to exit")
 		waitingForParticipants = s.roomManager.HasParticipants()
 	}
-	logger.Infow("livekit is exit, bye bye -1.56 !!")
+	//logger.Infow("livekit is exit, bye bye -1.56 !!")
 	partTicker.Stop()
-	logger.Infow("livekit is exit, bye bye -1.565 !!")
+
+	//logger.Infow("livekit is exit, bye bye -1.565 !!")
 	if !s.running.Swap(false) {
 		return
 	}
-	logger.Infow("livekit is exit, bye bye 0 !!")
+	//logger.Infow("livekit is exit, bye bye 0 !!")
 	s.router.Stop()
 	close(s.doneChan)
-	logger.Infow("livekit is exit, bye bye 1 !!")
+	//logger.Infow("livekit is exit, bye bye 1 !!")
 	// wait for fully closed
 	<-s.closedChan
-	logger.Infow("livekit is exit, bye bye 2 !!")
+	//logger.Infow("livekit is exit, bye bye 2 !!")
 }
 
 func (s *LivekitServer) RoomManager() *RoomManager {
